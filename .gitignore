@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 .Rproj
-spotify.R
+Spootify/spotify.R
 .httr-oauth
