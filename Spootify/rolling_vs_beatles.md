@@ -1,3 +1,32 @@
+---
+title: "The Rolling Stones vs The Beatles"
+output:
+  html_document:
+    keep_md: TRUE
+---
+<style type="text/css">
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 11px;
+}
+pre {
+  font-size: 11px
+}
+</style>
+
+Va mi contribución al **#datosdemiercoles del 2019-05-15.**
+
+Algunos comentarios preliminares. Tuve que usar el paquete spotifyr en vez del Rspotify, porque no podía descargar las canciones de los albumes.
+
+Lo que decidí hacer, luego de aprender a descargar la data de Spotify gracias al código de @R4DS_es es comparar a las dos mayores bandas del rock mundial, los Rolling vs los Beatles. 
+
+Para ello descargué los albumns y luego los nombres de las canciones de dichos albumns, para unirlos y descargar la información respectiva. Use este código para ello:
+
+
+
+```r
 library(spotifyr) #tuve que usar este paquete en vez del Rspotify porque tenía más versatilidad
 library(tidyverse)
 library(gridExtra)
@@ -96,15 +125,20 @@ beatles_final <- beatles_unnest %>%
     mutate(ano = substr(release_date, 1, 4)) %>% 
     select(-duration_ms.x, -id1, -type, -uri, -track_href, -analysis_url, -release_date) %>% 
     mutate(banda = "Beatles")
+```
 
+Luego uni todo y lo filtré para que las fechas sean más o menos comparables. Por cuestiones obvias, los Beatles dejaron de publicar discos a partir del año 1970, mientras que los Rolling siguen activos hasta hoy. Para compararlos utilicé los discos que publicaron entre 1963 y 1970.
 
-# Union, comparacion y graficos  -----------------------------------------------------
-
+```r
 rolling_beatles <- bind_rows(rolling_final, beatles_final)
 
 rolling_beatles_anos <- rolling_beatles %>% 
     filter(ano >1963 & ano <= 1970)
+```
 
+Y por último hice los gráficos de box plot por año. Estos gráficos no son tan claros, pero usar solo la media nos dejaba a fuera información sobre quizás un tema outlier que sea muy bailable, etc. Habrá que mirarlos con cuidado entonces
+
+```r
 positividad <- ggplot(data = rolling_beatles_anos)+
     geom_boxplot(aes(x= ano, y = valence, color = banda))+
     labs(title = "Positividad de las canciones", 
@@ -127,4 +161,11 @@ dance <- ggplot(data = rolling_beatles_anos)+
     theme_bw()
 
 grid.arrange(dance, energia, intensidad, positividad)
+```
 
+![](rolling_vs_beatles_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+De estos gráficos puede concluirse que, en terminos generales, las canciones de los Rolling y de los Beatles son bastante similares en bailabilidad, tienen un poco más de energía  las de los Rolling, son similares en intensidad (_loudness_) las de los Beatles, pero apenitas, y en terminos de "positividad" (_valence_)^[https://community.spotify.com/t5/Content-Questions/Valence-as-a-measure-of-happiness/td-p/4385221] son un poco más positivas las de los Rolling.
+
+Un capo Jagger como siempre!
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/SS51lpatCcI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
