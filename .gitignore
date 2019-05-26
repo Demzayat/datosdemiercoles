@@ -3,5 +3,9 @@
 .RData
 .Ruserdata
 .Rproj
+<<<<<<< HEAD
+=======
+Spootify/spotify.R
+>>>>>>> ed4dcc928345fa50ff80514a0f2ba0c623423f55
 .httr-oauth
 Spootify/spotify.R

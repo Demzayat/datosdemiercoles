@@ -1,8 +1,12 @@
 ---
 title: "The Rolling Stones vs The Beatles"
+<<<<<<< HEAD
 output:
   html_document:
     keep_md: TRUE
+=======
+output: html_document
+>>>>>>> ed4dcc928345fa50ff80514a0f2ba0c623423f55
 ---
 <style type="text/css">
 body, td {
