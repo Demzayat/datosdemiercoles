@@ -1,5 +1,6 @@
 ### Otra versión del código
 
+library(spotifyr)
 library(Rspotify)
 library(tidyverse)
 
@@ -12,12 +13,14 @@ client_id<- 'b4456d96b1ba4d9898b300f1f3b23832' # el client id que figura en la w
 client_secret <- 'e2d48ae635194372acb7d8c7474a55dc' # el client secret que figura en la web de spotify
 
 keys <- spotifyOAuth(app_id, client_id, client_secret)
+keys2 <- get_spotify_access_token(client_id = client_id, client_secret = client_secret) #para el paquete spotifyr
+
 
 
 ## obtencion de listas de top 50
 
 # devuelve de a maximo 50.
-user_playlists_1 <- getPlaylists("qn9el801z6l32l2whymqqs18p", token = keys)
+user_playlists_1 <- getPlaylistslists("qn9el801z6l32l2whymqqs18p", token = keys)
 
 # sigo del 51 en adelante ( ignora los primeros 50 )
 user_playlists_2 <- getPlaylists("qn9el801z6l32l2whymqqs18p", offset = 50, token = keys)
@@ -172,7 +175,42 @@ skimr::skim(top_50_total_es_para_desafio_final)
 
 # otro tipo de playlist ---------------------------------------------------
 
-playlist_Argentina <- getPlaylists("2DQ9dTuhrBbS6e3C5ANcw7", token = keys)
+playlist_indie_esenciales_Argentina <- getPlaylistSongs(playlist_id = "37i9dQZF1DX8RvHJklfhit", token = keys, user_id = client_id)
+playlist_top100_Argentina <- getPlaylistSongs(playlist_id = "0udTUMN4gEmaDZLfGbjZnE", user_id = client_id, token=keys)
+playlist_rock_Argentina <- getPlaylistSongs(playlist_id = "37i9dQZF1DWTMU14XJYy0g", user_id = client_id, token = keys)
+indie_top100 <- playlist_indie_esenciales_Argentina %>% 
+    inner_join(y = playlist_top100_Argentina )
+indie_rock <- playlist_indie_esenciales_Argentina %>% 
+    inner_join(playlist_rock_Argentina)
 
 
+# Rolling vs Beatles ------------------------------------------------------
+rolling <- getArtist("22bE4uQ6baNwSHPVcDxLCe", token = keys)
+rolling_albums <- getAlbums(rolling$id, market = "US", token = keys)
 
+rolling_albumes <- get_artist_albums("22bE4uQ6baNwSHPVcDxLCe", authorization = keys2,offset = 100)
+beatles_albumes <- get_artist_albums("3WrFJ7ztbogyGnTHbHJFl2", authorization = keys2)
+
+rolling_canciones <- rolling_albumes %>% 
+    mutate(canciones_lista =  purrr::pmap(.l=list(user_id=client_id,
+                                                  playlist_id=lista_id),
+                                          .f=getPlaylistSongs,
+                                          token=keys))
+album_info_rolling <- rolling_albumes %>%
+    select(cancion_album_id) %>% # los album id
+    distinct() %>% # unicos
+    mutate(album_info=purrr::map(.x=cancion_album_id,
+                                 .f=getAlbumInfo,
+                                 token=keys))
+
+albums_info_expandido <- albums_info %>%
+    mutate(fechas=purrr::map(.x=album_info,
+                             .f=function(album_inf_param){
+                                 album_inf_resu <- album_inf_param %>%
+                                     select(release_date) %>% # columna 6
+                                     head(1) %>% # el 1ro
+                                     pull() %>% # extraer
+                                     as.character() # como char
+                                 album_inf_resu # resu
+                             })) %>%
+    unnest(fechas)
