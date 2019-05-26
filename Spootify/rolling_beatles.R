@@ -128,3 +128,7 @@ dance <- ggplot(data = rolling_beatles_anos)+
 
 grid.arrange(dance, energia, intensidad, positividad)
 
+
+
+
+
