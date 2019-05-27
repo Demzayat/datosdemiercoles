@@ -163,10 +163,19 @@ dance <- ggplot(data = rolling_beatles_anos)+
 grid.arrange(dance, energia, intensidad, positividad)
 ```
 
+```
+## Warning: Removed 10 rows containing non-finite values (stat_boxplot).
+
+## Warning: Removed 10 rows containing non-finite values (stat_boxplot).
+
+## Warning: Removed 10 rows containing non-finite values (stat_boxplot).
+
+## Warning: Removed 10 rows containing non-finite values (stat_boxplot).
+```
+
 ![](rolling_vs_beatles_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 De estos gráficos puede concluirse que, en terminos generales, las canciones de los Rolling y de los Beatles son bastante similares en bailabilidad, tienen un poco más de energía  las de los Rolling, en intensidad (_loudness_) las de los Beatles apenitas más, y en terminos de "positividad" (_valence_)^[https://community.spotify.com/t5/Content-Questions/Valence-as-a-measure-of-happiness/td-p/4385221] son un poco más positivas las de los Rolling.
 
-Como sugiere @violetrzn habría que ver cuáles son los outliers, pero eso quedará para más adelante, o para quien quiera seguirlo!!
 
 Un capo Jagger como siempre!
 
